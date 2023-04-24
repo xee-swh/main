@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/designpro/designpro.iml" filepath="$PROJECT_DIR$/designpro/designpro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javasepro/javasepro.iml" filepath="$PROJECT_DIR$/javasepro/javasepro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kafkapro/kafkapro.iml" filepath="$PROJECT_DIR$/kafkapro/kafkapro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mybatispro/mybatispro.iml" filepath="$PROJECT_DIR$/mybatispro/mybatispro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rabbitmqpro/rabbitmqpro.iml" filepath="$PROJECT_DIR$/rabbitmqpro/rabbitmqpro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/redispro/redispro.iml" filepath="$PROJECT_DIR$/redispro/redispro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springbootpro/springbootpro.iml" filepath="$PROJECT_DIR$/springbootpro/springbootpro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springcloudpro/springcloudpro.iml" filepath="$PROJECT_DIR$/springcloudpro/springcloudpro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xeepro.iml" filepath="$PROJECT_DIR$/xeepro.iml" />
+    </modules>
+  </component>
+</project>
