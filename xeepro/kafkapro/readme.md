@@ -136,9 +136,9 @@
     log.dirs=/usr/local/kafka/kafka_2.12-2.8.2/kafka-logs
     zookeeper.connect=localhost:2181
  
-    delete.topic.enble=true这段代码会对以后删除kafka中的topic有影响，这段代码在文件尾部添加上即可
-    listeners=PLAINTEXT://:9092 ：这个命令也很重要，需要记住(这个命令在文章里先不做分析)
-    advertised.listeners=PLAINTEXT://自己的主机ip地址:9092：这个localhost我用的是主机ip地址
+    delete.topic.enble=true,如果没有在kafka/config/server.properties配置：delete.topic.enable=true时，
+    执行topic的删除命令只是把topic标记为marked for deletion，并不是真正的删除，如果此时想彻底删除，就需要登录
+    zookeeper客户端进行删除
 
   ### 6、配置kafka环境变量，配置zookeeper和kafka的全局命令 
  
@@ -174,11 +174,11 @@
 
  ## kafka的使用
 
-  ### 1、启动Zookeeper服务，在kafka的根目录下使用命令
+   Kafka用到了Zookeeper，先开启zookeeper，再开启Kafka(依次开启)
 
-  Kafka用到了Zookeeper，先开启zookeeper，再开启Kafka(依次开启)
+  ### 1、启动Zookeeper服务，在kafka的根目录下使用命令
   
-  以下使用都是基于一个单实例的Zookkeeper服务，可以在命令结尾处加个&符号(进程守护)，启动kafak命令同理。
+  下面是基于一个实例的zookeeper服务，可以在命令结尾处加个&符号(进程守护)，启动kafka命令同理。
 
     ./bin/zookeeper-server-start.sh config/zookeeper.properties &
     
@@ -191,11 +191,15 @@
     ./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic topic1
     (--zookeeper： kafka连接zookeeper的url，和server.properties文件中的配置项 zookeeper.connect=localhost:2181 一致)
  
-  ### 4、查看kafka的topic情况，在kafka的根目录下使用命令
+  ### 4、查看kafka的topic列表
+   
+   在kafka的根目录下使用命令
     
      ./bin/kafka-topics.sh --list --zookeeper localhost:2181
 
-  ### 5、描述topic，查看topic的详细信息，在kafka的根目录下使用命令
+  ### 5、查看单个topic详情
+  
+   查看topic的详细信息，在kafka的根目录下使用命令
 
     ./bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic topic1
 
@@ -204,7 +208,7 @@
   -生产消息，生产者客户端命令，在kafka的根目录下使用命令
 
     ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic topic1
-    (这里的  --broker-list localhost:9092是进入生产消息的编辑模式，进行编辑并发送)
+    (--broker-list localhost:9092是进入生产消息的编辑模式，进行编辑并发送)
     
    输入消息
     
@@ -215,12 +219,15 @@
 
     ./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic1 --from-beginning
     --from-beginning表示从最开始接受消息
+    
    消费消息如下：
       
     hello,kafka
     this is kafka
     
-  ### 7、删除topic，在kafka的根目录下使用命令
+  ### 7、删除topic，
+  
+   在kafka的根目录下使用命令
 
     ./bin/kafka-topics.sh --delete --zookeeper localhost:2181 --topic topic1
     
@@ -248,7 +255,7 @@
   删除需要彻底删除的topic1，在zookeeper客户端输入这个命令
 
     deleteall /brokers/topics/topic1
-    rmr 命令已经被废弃了，可以执行 deleteall 命令
+    (rmr 命令已经被废弃了，可以执行 deleteall 命令)
 
   可以再次查看确认一下，在zookeeper客户端输入这个命令
 
