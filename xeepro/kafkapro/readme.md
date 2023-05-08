@@ -181,6 +181,8 @@
   下面是基于一个实例的zookeeper服务，可以在命令结尾处加个&符号(进程守护)，启动kafka命令同理。
 
     ./bin/zookeeper-server-start.sh config/zookeeper.properties &
+    或者
+    ./bin/zkServer.sh  start 
     
   ### 2、启动kafka，在kafka的根目录下使用命令
     
@@ -289,8 +291,8 @@
 
 ## 实现原理
 kafka组成
-
     -producer
+    acks = 1 表示？
     -consumer
     -broker
     -分区

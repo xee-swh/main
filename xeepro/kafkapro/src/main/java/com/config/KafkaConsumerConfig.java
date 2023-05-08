@@ -1,68 +1,26 @@
-//package com.config;
-//
-//import org.apache.kafka.clients.consumer.ConsumerConfig;
-//import org.apache.kafka.common.serialization.StringDeserializer;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-//import org.springframework.kafka.core.ConsumerFactory;
-//import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-//import org.springframework.kafka.support.serializer.JsonDeserializer;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//@Configuration
-//public class KafkaConsumerConfig {
-//    @Value(value = "localhost:9092")
-//    private String bootstrapAddress;
-//
-//    @Value(value = "group_id")
-//    private String groupId;
-//
-//    @Value(value = "group_id")
-//    private String userGroupId;
-//
-//    @Bean
-//    public ConsumerFactory<String, String> consumerFactory() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-//        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-//                StringDeserializer.class);
-//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-//                StringDeserializer.class);
-//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-//        return new DefaultKafkaConsumerFactory<>(props);
-//    }
-//
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, String>
-//    kafkaListenerContainerFactory() {
-//        ConcurrentKafkaListenerContainerFactory<String, String> factory
-//                = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerFactory());
-//        return factory;
-//    }
-//
-//    @Bean
-//    public ConsumerFactory<String, Object> objectConsumerFactory() {
-//        Map<String, Object> props = new HashMap<>();
-//        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-//        props.put(ConsumerConfig.GROUP_ID_CONFIG, userGroupId);
-//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-//        return new DefaultKafkaConsumerFactory<>(props,
-//                new StringDeserializer(),
-//                new JsonDeserializer<>(Object.class));
-//    }
-//
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, Object>
-//    userKafkaListenerContainerFactory() {
-//        ConcurrentKafkaListenerContainerFactory<String, Object> factory
-//                = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(objectConsumerFactory());
-//        return factory;
-//    }
-//}
+package com.config;
+
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.Properties;
+
+/**
+ * @Title Subscribe.java
+ */
+@Configuration
+public class KafkaConsumerConfig {
+
+    @Bean
+    public KafkaConsumer<String, String> consumer() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "192.168.42.89:9092,192.168.42.89:9093,192.168.42.89:9094");
+        props.put("group.id", "test-consumer-group");
+        props.put("auto.offset.reset", "earliest");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        return consumer;
+    }
+}
