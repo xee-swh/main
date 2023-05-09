@@ -49,7 +49,7 @@ public class Subscribe implements CommandLineRunner {
                 consumer.commitSync();
             }
         } finally {
-            /** 
+            /**
              * 在退出应用程序之前使用 close() 方法关闭消费者。
              * 网络连接和 socket 也会随之关闭，并立即触发一次再均衡，而不是等待群组协调器发现它不再发送心跳并认定它已死亡，
              * 因为那样需要更长的时间，导致整个群组在一段时间内无法读取消息。

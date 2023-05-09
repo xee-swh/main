@@ -20,7 +20,7 @@ public class KafkaConsumerConfig {
         props.put("auto.offset.reset", "earliest");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-        return consumer;
+        return new KafkaConsumer<>(props);
     }
+
 }
