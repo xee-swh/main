@@ -290,15 +290,46 @@
     jps -m
 
 ## 实现原理
-kafka组成
-    -producer
-    acks = 1 表示？
+  kafka组成
+  
+  .producer
+    
+   ack应答机制:对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没有必要等ISR中的follower全部接收成功。
+   所以Kafka提供了三种可靠性级别，用户可以根据对可靠性和延迟的要求进行权衡。acks：
+    
+     0： producer不等待broker的ack，这一操作提供了一个最低的延迟，broker一接收到还没写入磁盘就已经返回，
+         当broker故障时可能丢失数据；
+         
+     1： producer等待leader的ack，partition的leader落盘成功后返回ack，如果在follower同步成功之前
+         leader故障，那么将会丢失数据；
+         
+     -1（all）：producer等待broker的ack，partition的leader和ISR里的follower全部落盘成功后才返回ack。
+         但是如果在follower同步完成后，broker发送ack之前，leader发生故障，那么会造成重复数据。（极端情况
+         下也有可能丢数据：ISR中只有一个Leader时，相当于1的情况）。
     -consumer
     -broker
     -分区
     -副本
 
-## 对比
+## 故障处理
+
+### 1.LEO和HW
+
+    LEO （ Log End Offset ）： 每个副本的最后一个 offset ， LEO 其实就是最新的 offset+ 1 。
+    HW （ High Watermark ）： 所有副本中最小的 LEO 。
+
+#### --follower故障
+  follower发生故障后会被临时踢出ISR，待该follower恢复后，follower会读取本地磁盘记录的上次的HW，并将log
+  文件高于HW的部分截取掉，从HW开始向leader进行同步。等该follower的LEO大于等于该Partition的HW，
+  即follower追上leader之后，就可以重新加入ISR了。
+
+#### --leader故障
+  leader发生故障后，会从ISR中选出一个新的leader，之后为了保证多个副本之间的数据一致性，其余的follower
+  会先将各自的log文件高于HW的部分截掉，然后从新的leader同步数据。
+  
+ 注意：这只能保证副本之间的数据一致性，并不能保证数据不丢失或者不重复。
+
+
 
 
 
