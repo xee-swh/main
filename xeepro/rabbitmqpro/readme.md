@@ -86,6 +86,6 @@
 
     sudo rabbitmqctl add_user swh swh123
     
-  ### 赋予lrq账户管理员角色，要记得赋权限，否则登录会报401错误
+  ### 赋予swh账户管理员角色，要记得赋权限，否则登录会报401错误
     
     sudo rabbitmqctl set_user_tags swh  administrator
