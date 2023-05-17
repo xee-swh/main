@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * @Title Subscribe.java
+ * @Title
  * @Description 订阅多个主题的全部分区
  */
 @Component

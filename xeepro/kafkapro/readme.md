@@ -292,10 +292,18 @@
 ## 实现原理
   kafka组成
   
-  .producer
+  ### producer
+   #### 生产者
+   生产者（发布者）创建消息，一般情况下，一个消息会被发布到一个特定的主题上。生产者在默认情况下把消息均衡的分布
+   到主题的所有分区上，而并不关心特定消息会被写入哪个分区。不过，生产者也可以把消息直接写到指定的分区。这通常通过
+   消息键和分区器来实现，分区器为键生成一个散列值，并将其映射到指定的分区上。生产者也可以自定义分区器，根据不同的
+   业务规则将消息映射到分区。 
     
+   #### 消息发送确认机制
    ack应答机制:对于某些不太重要的数据，对数据的可靠性要求不是很高，能够容忍数据的少量丢失，所以没有必要等ISR中的follower全部接收成功。
-   所以Kafka提供了三种可靠性级别，用户可以根据对可靠性和延迟的要求进行权衡。acks：
+   所以Kafka提供了三种可靠性级别，用户可以根据对可靠性和延迟的要求进行权衡。
+   
+   acks：
     
      0： producer不等待broker的ack，这一操作提供了一个最低的延迟，broker一接收到还没写入磁盘就已经返回，
          当broker故障时可能丢失数据；
@@ -306,10 +314,50 @@
      -1（all）：producer等待broker的ack，partition的leader和ISR里的follower全部落盘成功后才返回ack。
          但是如果在follower同步完成后，broker发送ack之前，leader发生故障，那么会造成重复数据。（极端情况
          下也有可能丢数据：ISR中只有一个Leader时，相当于1的情况）。
-    -consumer
-    -broker
-    -分区
-    -副本
+   ### consumer
+   
+   ### broker
+   
+   一个独立的kafka服务器被称为broker。broker接收来自生产者的消息，为消息设置偏移量，并提交消息到磁盘保存。
+   broker为消费者提供服务，对读取分区的请求作出相应，返回已经提交到磁盘上的消息。
+   
+   集群：交给同一个zookeeper集群来管理的broker节点就组成了kafka的集群。
+   
+   broker是集群的组成部分，每个集群都有一个broker同时充当集群控制器的角色。控制器负责管理工作，包括将分区分配
+   给broker和监控broker。在broker中，一个分区从属于一个broker，该broker被称为分区的首领。一个分区可以分配
+   给多个broker（Topic设置了多个副本的时候），这时会发生分区复制。
+   
+   ### 主题
+     Kafka的消息通过主题（Topic）进行分类，就好比是数据库的表，或者是文件系统里的文件夹。
+  
+   ### 分区
+   
+   Topic是逻辑上的概念，而partition（分区）是物理上的概念，每个partition对应于一个log文件，该log文件中存储的就是
+   producer生产的数据。Producer生产的数据会被不断追加到该log文件末端，且每条数据都有自己的offset。消费者组中的每个
+   消费者，都会实时记录自己消费到哪个offset，以便出错恢复时，从上次的位置继续消费。
+   
+   主题可以被分为若干个分区（Partition），一个分区就是一个提交日志。消息以追加的方式写入分区，然后以先进先出的顺序读取。
+   注意，由于一个主题一般包含几个分区，因此无法在整个主题范围内保证消息的顺序，但可以保证消息在单个分区内的顺序。
+   主题是逻辑上的概念，在物理上，一个主题是横跨多个服务器。
+   
+   ### 副本
+
+
+## 副本
+ 
+ 1.Kafka副本作用：提高数据可靠性。
+ 
+ 2.Kafka中副本分为:Leader和Follower。Kafka生产者只会把数据发往Leader,然后Follower找Leader进行同步数据。
+   读写由leader来完成，follower只备份，和leader同步数据，leader发生故障，follower顶上去。
+   leader副本：可以理解为某个分区中，除了不是副本的那个分区。
+   
+ 3.Kafka分区中的所有副本统称为AR(Assigned Repllicas)。
+    AR=ISR+OSR
+    
+ 4.ISR表示和Leader保持同步的Follower集合。如果Follower长时间未向Leader发送通信请求或同步数据，则该Follower
+   将被踢出ISR。该时间阈值由replica.lag.time.max.ms参数设定，默认30s。Leader发生故障之后，就会从ISR中选举新的Leader。
+   
+ 5.OSR:表示Follower与Leader副本同步时，超时的副本集合。
 
 ## 故障处理
 
