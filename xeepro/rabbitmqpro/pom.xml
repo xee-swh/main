@@ -11,5 +11,13 @@
 
     <artifactId>rabbitmq-pro</artifactId>
 
-
+    <dependencies>
+        <!--springboot集成rabbitmq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <!--<version>1.5.10.RELEASE</version>-->
+            <!--<version>1.5.10</version>-->
+        </dependency>
+    </dependencies>
 </project>

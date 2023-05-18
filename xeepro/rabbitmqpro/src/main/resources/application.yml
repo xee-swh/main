@@ -1,0 +1,15 @@
+server:
+  port: 9998
+  servlet:
+    context-path: /rabbitpro
+spring:
+  #rabbit配置
+  rabbitmq:
+      host: 192.168.1.131
+      port: 5672
+      username: swh
+      password: swh123
+#      virtual-host: /
+      connection-timeout: 0
+      publisher-confirm-type:
+
