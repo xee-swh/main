@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="designpro" />
+        <module name="exportpro" />
         <module name="javasepro" />
         <module name="kafkapro" />
         <module name="mybatispro" />
@@ -18,6 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="designpro" target="1.8" />
+      <module name="exportpro" target="1.8" />
       <module name="javasepro" target="1.8" />
       <module name="kafkapro" target="1.8" />
       <module name="mybatispro" target="1.8" />

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/designpro/designpro.iml" filepath="$PROJECT_DIR$/designpro/designpro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/exportpro/exportpro.iml" filepath="$PROJECT_DIR$/exportpro/exportpro.iml" />
       <module fileurl="file://$PROJECT_DIR$/javasepro/javasepro.iml" filepath="$PROJECT_DIR$/javasepro/javasepro.iml" />
       <module fileurl="file://$PROJECT_DIR$/kafkapro/kafkapro.iml" filepath="$PROJECT_DIR$/kafkapro/kafkapro.iml" />
       <module fileurl="file://$PROJECT_DIR$/mybatispro/mybatispro.iml" filepath="$PROJECT_DIR$/mybatispro/mybatispro.iml" />

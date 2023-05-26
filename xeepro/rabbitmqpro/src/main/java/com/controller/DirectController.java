@@ -1,15 +1,12 @@
 package com.controller;
 
 import com.config.DirectExchangeConfig;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Slf4j
 @RequestMapping("/direct")
 public class DirectController {
  
@@ -26,8 +23,8 @@ public class DirectController {
      */
     @GetMapping("send")
     public Object sendMsg() {
-//        rabbitTemplate.send(DirectExchangeConfig.DIRECT_EXCHANGE, DirectExchangeConfig.DIRECT_ROUTING_KEY,"发送一条测试消息：direct");
         rabbitTemplate.convertAndSend(DirectExchangeConfig.DIRECT_EXCHANGE, DirectExchangeConfig.DIRECT_ROUTING_KEY, "发送一条测试消息：direct");
         return "direct消息发送成功！！";
     }
+
 }

@@ -31,7 +31,7 @@ public class DirectQueueListener {
     public void process(String testMessage) {
         System.out.println("DirectReceiver消费者收到消息1  : " + testMessage);
     }
- 
+
     @RabbitHandler
     @RabbitListener(queues = DirectExchangeConfig.DIRECT_QUEUE)
     public void process2(String testMessage) {

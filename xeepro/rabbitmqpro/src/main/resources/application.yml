@@ -9,7 +9,5 @@ spring:
       port: 5672
       username: swh
       password: swh123
+      dynamic: true
 #      virtual-host: /
-      connection-timeout: 0
-      publisher-confirm-type:
-

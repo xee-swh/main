@@ -17,6 +17,7 @@
         <module>springbootpro</module>
         <module>designpro</module>
         <module>mybatispro</module>
+        <module>exportpro</module>
     </modules>
 
     <parent>
