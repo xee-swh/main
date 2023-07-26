@@ -11,5 +11,8 @@
 
     <artifactId>javase-pro</artifactId>
 
+    <dependencies>
+
+    </dependencies>
 
 </project>
