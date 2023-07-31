@@ -377,10 +377,87 @@
 
 
 
+##Kafka面试
+
+### kafka消费者采用推还是拉？
+	producer 将消息推送到 broker，consumer 从broker 拉取消息
+
+	优点：pull模式消费者自主决定是否批量从broker拉取数据，而push模式在无法知道消费者消费能力情况下，
+	不易控制推送速度，太快可能造成消费者奔溃，太慢又可能造成浪费。
+
+	缺点：如果 broker 没有可供消费的消息，将导致 consumer 不断在循环中轮询，直到新消息到到达。
+	为了避免这点，Kafka 有个参数可以让 consumer阻塞知道新消息到达(当然也可以阻塞知道消息的数量达到
+	某个特定的量这样就可以批量发送)。
+
+### kafka维护消息状态的跟踪方法
+	
+	Kafka中的Topic 被分成了若干分区，每个分区在同一时间只被一个 consumer消费。然后再通过offset进行
+	消息位置标记，通过位置偏移来跟踪消费状态。相比其他一些消息队列使用“一个消息被分发到consumer 后 
+	broker 就马上进行标记或者等待 customer 的通知后进行标记”的优点是，避免了通信消息发送后，可能
+	出现的程序奔溃而出现消息丢失或者重复消费的情况。同时也无需维护消息的状态，不用加锁，提高了吞吐量。
+
+### zookeeper对于kafka的作用是什么?
+	Zookeeper 主要用于在集群中不同节点之间进行通信，在 Kafka 中，它被用于提交偏移量，因此如果
+	节点在任何情况下都失败了，它都可以从之前提交的偏移量中获取，除此之外，它还执行其他活动，如: 
+	leader 检测、分布式同步、配置管理、识别新节点何时离开或连接、集群、节点实时状态等等。
+
+
+### kafka判断一个节点还活着的有那两个条件？
+    （1）节点必须维护和 ZooKeeper 的连接，Zookeeper 通过心跳机制检查每个节点的连接
+    （2）如果节点是个 follower,他必须能及时的同步 leader 的写操作，延时不能太久
+
+### 讲一讲 kafka 的 ack 的三种机制
+    request.required.acks 有三个值 0 1 -1(all)，具体如下：
+    0：生产者不会等待 broker 的 ack，这个延迟最低但是存储的保证最弱当 server 挂掉的时候就会丢数据。
+    1：服务端会等待 ack 值 leader 副本确认接收到消息后发送 ack 但是如果 leader挂掉后他不确保是
+    否复制完成新 leader 也会导致数据丢失。
+    -1(all)：服务端会等所有的 follower 的副本受到数据后才会受到 leader 发出的ack，这样数据不会丢失。
+
+
+### kafka 分布式（不是单机）的情况下，如何保证消息的顺序消费?
+    Kafka 中发送 1 条消息的时候，可以指定(topic, partition, key) 3 个参数，partiton 和 key 是可选的。
+
+    Kafka 分布式的单位是 partition，同一个 partition 用一个 write ahead log 组织，所以可以保证FIFO
+    的顺序。不同 partition 之间不能保证顺序。因此你可以指定 partition，将相应的消息发往同 1个 partition，
+    并且在消费端，Kafka 保证1 个 partition 只能被1 个 consumer 消费，就可以实现这些消息的顺序消费。
+
+    另外，你也可以指定 key（比如 order id），具有同 1 个 key 的所有消息，会发往同 1 个partition，
+    那这样也实现了消息的顺序消息。
+
+### kafka集群
+
+    Broker（代理）
+
+	Kafka集群通常由多个代理组成以保持负载平衡。 Kafka代理是无状态的，所以他们使用ZooKeeper来维护它们的
+	集群状态。 一个Kafka代理实例可以每秒处理数十万次读取和写入，每个Broker可以处理TB的消息，而没有性能影响。 
+	Kafka经纪人领导选举可以由ZooKeeper完成。
+
+    ZooKeeper
+
+	ZooKeeper用于管理和协调Kafka代理。 ZooKeeper服务主要用于通知生产者和消费者Kafka系统中存在任何新
+	代理或Kafka系统中代理失败。 根据Zookeeper接收到关于代理的存在或失败的通知，然后生产者和消费者采取
+	决定并开始与某些其他代理协调他们的任务。
+
+    Producers（生产者）
+
+	生产者将数据推送给经纪人。 当新代理启动时，所有生产者搜索它并自动向该新代理发送消息。 Kafka生产者不
+	等待来自代理的确认，并且发送消息的速度与代理可以处理的一样快。
+
+    Consumers（消费者）
+
+	因为Kafka代理是无状态的，这意味着消费者必须通过使用分区偏移来维护已经消耗了多少消息。 如果消费者确认
+	特定的消息偏移，则意味着消费者已经消费了所有先前的消息。 消费者向代理发出异步拉取请求，以具有准备好
+	消耗的字节缓冲区。 消费者可以简单地通过提供偏移值来快退或跳到分区中的任何点。 消费者偏移值
+	由ZooKeeper通知。
+
+
+### partition的数据文件（offffset，MessageSize，data）
+    partition中的每条Message包含了以下三个属性： offset，MessageSize，data，其中
+    offset表示Message在这个partition中的偏移量，offset不是该Message在partition数据文件中的实际存储位置，
+    而是逻辑上一个值，它唯一确定了partition中的一条Message，可以认为offset是partition中Message的 
+    id； MessageSize表示消息内容data的大小；data为Message的具体内容。
 
 
 
 
 
-
-# 常见
